@@ -72,9 +72,20 @@ test("keyboard focus is clearly visible", async ({ page }) => {
   const skip = page.getByRole("link", { name: "Skip to titles" });
   await expect(skip).toBeFocused();
   await expect(skip).toBeInViewport(); // the skip link must appear when focused
-  await page.keyboard.press("Tab");
-  const next = page.getByRole("button", { name: "Next" });
+  const next = page.getByRole("button", { name: "Next", exact: true });
+  for (let i = 0; i < 60 && !(await next.evaluate((el) => el === document.activeElement)); i++) await page.keyboard.press("Tab");
   await expect(next).toBeFocused();
+  // Same for a title button and a form field: focus must be visible everywhere, not only on the pager.
+  for (const target of [page.getByLabel("Title contains"), page.locator("#titles li button").first()]) {
+    await target.focus();
+    const o = await target.evaluate((el) => {
+      const s = getComputedStyle(el);
+      return { style: s.outlineStyle, width: parseFloat(s.outlineWidth) };
+    });
+    expect(o.style).not.toBe("none");
+    expect(o.width).toBeGreaterThanOrEqual(2);
+  }
+  await next.focus();
   const outline = await next.evaluate((el) => {
     const s = getComputedStyle(el);
     return { style: s.outlineStyle, width: parseFloat(s.outlineWidth) };

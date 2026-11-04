@@ -1,4 +1,4 @@
-// Starts the built app and saves screenshots to look at: light/dark x desktop/360px.
+// Starts the built app and saves screenshots to look at: light/dark x desktop/360px, each with and without a detail open.
 // Usage: npm run ui:shots [outDir]   (run `npm run build` first)
 import { spawn } from "node:child_process";
 import { mkdirSync } from "node:fs";
@@ -26,6 +26,14 @@ try {
       const file = join(out, `${scheme}-${name}.png`);
       await page.screenshot({ path: file, fullPage: true });
       console.log(file);
+      // Same view with a search applied and a show's detail open.
+      await page.getByLabel("Title contains").fill("Bridgerton");
+      await page.getByLabel("Kind").selectOption({ label: "Shows" });
+      await page.getByRole("button", { name: /^Bridgerton/ }).first().click();
+      await page.locator(".seasons li").first().waitFor();
+      const detailFile = join(out, `${scheme}-${name}-detail.png`);
+      await page.screenshot({ path: detailFile, fullPage: true });
+      console.log(detailFile);
       await page.close();
     }
   }

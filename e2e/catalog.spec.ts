@@ -26,9 +26,14 @@ test("grid has 20 titles and next/previous change them", async ({ page }) => {
 test("pager is reachable and operable by keyboard", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("#titles li")).toHaveCount(20);
-  await page.keyboard.press("Tab"); // skip link
-  await page.keyboard.press("Tab"); // Previous (disabled -> skipped) -> Next
-  await expect(page.getByRole("button", { name: "Next" })).toBeFocused();
+  const next = page.getByRole("button", { name: "Next", exact: true });
+  // Tab through skip link, search form and the 20 title buttons until Next (Previous is disabled, so it is skipped).
+  let presses = 0;
+  while (!(await next.evaluate((el) => el === document.activeElement)) && presses < 60) {
+    await page.keyboard.press("Tab");
+    presses++;
+  }
+  await expect(next).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page.locator("#page-info")).toContainText("Page 2");
 });

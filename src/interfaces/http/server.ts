@@ -2,6 +2,7 @@ import { createServer, type Server, type ServerResponse } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 import { getStats } from "../../application/getStats.ts";
+import { NotFoundError, getMovie, getShow } from "../../application/getTitleDetail.ts";
 import { InvalidQueryError, listTitles } from "../../application/listTitles.ts";
 import type { CatalogRepository } from "../../application/ports.ts";
 
@@ -24,14 +25,23 @@ export function createHttpServer(repo: CatalogRepository, staticDir: string): Se
       const url = new URL(req.url ?? "/", "http://localhost");
 
       if (url.pathname === "/api/stats") return json(res, 200, getStats(repo));
-      if (url.pathname === "/api/titles") {
-        const raw = url.searchParams.get("page");
-        try {
-          return json(res, 200, listTitles(repo, { page: raw === null ? undefined : Number(raw) }));
-        } catch (e) {
-          if (e instanceof InvalidQueryError) return json(res, 400, { error: e.message });
-          throw e;
+      try {
+        if (url.pathname === "/api/titles") {
+          const q = url.searchParams;
+          const opt = (k: string) => q.get(k) ?? undefined;
+          const optNum = (k: string) => (q.has(k) ? Number(q.get(k)) : undefined);
+          return json(res, 200, listTitles(repo, { page: optNum("page"), kind: opt("kind"), text: opt("q"), year: optNum("year"), sort: opt("sort") }));
         }
+        const detail = url.pathname.match(/^\/api\/(movies|shows)\/([^/]+)$/);
+        if (detail) {
+          if (!/^\d+$/.test(detail[2]!)) return json(res, 400, { error: "id must be a positive integer" });
+          const id = Number(detail[2]);
+          return json(res, 200, detail[1] === "movies" ? getMovie(repo, id) : getShow(repo, id));
+        }
+      } catch (e) {
+        if (e instanceof InvalidQueryError) return json(res, 400, { error: e.message });
+        if (e instanceof NotFoundError) return json(res, 404, { error: e.message });
+        throw e;
       }
       if (url.pathname.startsWith("/api/")) return json(res, 404, { error: "not found" });
 

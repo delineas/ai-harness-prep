@@ -4,7 +4,7 @@ Business rules of spec 01, numbered so code, tests and reviews can cite them (`R
 
 Every figure below was measured on the pinned catalog (netflixdb v1.0.70) with a read-only connection. "Spec" means the rule comes from `specs/spec-01-catalog.md`; "Decision" means the spec left it open and this document chose.
 
-**Implementation status:** R1–R6 and R17 are implemented. R7–R16 are not yet (hours, top 10, filters, sort, detail). R10 also exposes a bug in the current list: it reads `tv_show.release_date`, which is empty for every show.
+**Implementation status:** R1–R17 are implemented and tested (`tests/explorer.test.ts`, `tests/catalog.test.ts`, `e2e/`). R10's bug (shows read `tv_show.release_date`, empty for every show) is fixed by R9: a show's year comes from its earliest season.
 
 ## Data
 
@@ -42,7 +42,7 @@ Every figure below was measured on the pinned catalog (netflixdb v1.0.70) with a
 - Why SEMI_ANNUALLY only, with data: WEEKLY rows carry `hours_viewed` too (all 6,911). The weekly rows inside the semi-annual window already add up to 32.5 B hours on top of the 178.5 B of the semi-annual ones, so adding both counts the same viewing twice. The spec also assigns hours to the semi-annual report.
 - Consequence to accept: 1,099 movies appear in the weekly top 10 and in no semi-annual report, so they have **no hours**. They are shown as "no data", not as 0 h.
 
-**R12. Hours viewed of a show (decision).** The sum of the R11 hours of its seasons. A show with no season hours has no hours (4,325 of 4,862 do). The show detail lists the hours per season.
+**R12. Hours viewed of a show (decision).** The sum of the R11 hours of its seasons. A show with no season hours has no hours: 537 of 4,862 shows have none, and 4,325 have some (checked: 4,325 distinct shows own a season with a SEMI_ANNUALLY row; an earlier wording of this line had the two numbers swapped). The show detail lists the hours per season.
 
 **R13. Hours format (spec + decision).** One decimal. At 1,000,000 or more: `382.2 M h`. From 1,000: `12.3 k h`. Below that: `950 h`.
 

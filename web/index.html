@@ -13,14 +13,50 @@
       <dl id="stats" class="stats" aria-label="Catalog statistics" aria-busy="true"></dl>
     </header>
     <main>
-      <h2 id="titles-heading" tabindex="-1">Titles</h2>
-      <p id="status" role="status" aria-live="polite"></p>
-      <ul id="titles" class="grid"></ul>
-      <nav class="pager" aria-label="Pagination">
-        <button type="button" id="prev">Previous</button>
-        <span id="page-info"></span>
-        <button type="button" id="next">Next</button>
-      </nav>
+      <form id="search" class="search" role="search" aria-label="Search titles">
+        <div class="field">
+          <label for="q">Title contains</label>
+          <input id="q" name="q" type="search" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label for="kind">Kind</label>
+          <select id="kind" name="kind">
+            <option value="">Movies and shows</option>
+            <option value="movie">Movies</option>
+            <option value="show">Shows</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="year">Release year</label>
+          <input id="year" name="year" type="number" inputmode="numeric" min="1900" max="2100" step="1" />
+        </div>
+        <div class="field">
+          <label for="sort">Sort by</label>
+          <select id="sort" name="sort">
+            <option value="title">Title</option>
+            <option value="hours">Hours viewed (most first)</option>
+          </select>
+        </div>
+        <button type="submit">Search</button>
+      </form>
+      <p id="year-note" class="note" hidden>Titles whose release year is unknown are hidden while a year is set. Most titles have no release year.</p>
+      <div class="layout">
+        <section aria-labelledby="titles-heading">
+          <h2 id="titles-heading" tabindex="-1">Titles</h2>
+          <p id="status" role="status" aria-live="polite"></p>
+          <ul id="titles" class="grid"></ul>
+          <nav class="pager" aria-label="Pagination">
+            <button type="button" id="prev">Previous</button>
+            <span id="page-info"></span>
+            <button type="button" id="next">Next</button>
+          </nav>
+        </section>
+        <section id="detail" class="detail" aria-labelledby="detail-heading" hidden>
+          <h2 id="detail-heading" tabindex="-1">Details</h2>
+          <p id="detail-status" role="status" aria-live="polite"></p>
+          <div id="detail-body"></div>
+        </section>
+      </div>
     </main>
     <script type="module" src="./src/main.ts"></script>
   </body>
