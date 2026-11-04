@@ -36,6 +36,7 @@ Never change (denied):
 - `tests/architecture.test.ts` and `scripts/verify.ts` (the rules that judge the work).
 - `e2e/**`, `playwright.config.ts` and `vitest.config.ts` (end-to-end tests and test config).
 - `git commit`, `git tag`, and switching to `sin-harness`, unless asked.
+- `.githooks/**` and `scripts/agent-run.sh` (agent-independent guards: branch-name hooks, and the bwrap launcher that masks `data/app.db` and strips `BATCH_*`). Start any agent through `scripts/agent-run.sh <cmd>`.
 
 Ask first (confirmation required):
 - The app database: anything else under `data/`, any `.sql` file, `sqlite3`.

@@ -1,0 +1,6 @@
+#!/bin/sh
+# Refuse commits unless HEAD is a well-named branch. Skipped by --no-verify;
+# the reference-transaction hook is the backstop that is not.
+. "$(dirname "$0")/branch-policy.sh"
+b=$(git symbolic-ref --quiet --short HEAD) || branch_reject "(detached HEAD)"
+branch_ok "$b" || branch_reject "$b"

@@ -1,0 +1,23 @@
+#!/bin/sh
+# Runs on every ref update, including with --no-verify.
+# Rejects (a) creating a local branch with a bad name, (b) commit-like updates
+# (commit, cherry-pick, revert, rebase, bare update-ref) of a branch that is not well-named.
+# Pull/merge fast-forwards of main are left alone so `git pull` keeps working.
+[ "$1" = "prepared" ] || exit 0
+. "$(dirname "$0")/branch-policy.sh"
+zero=0000000000000000000000000000000000000000
+while read -r old new ref; do
+  case "$ref" in refs/heads/*) ;; *) continue ;; esac
+  [ "$new" = "$zero" ] && continue            # deleting is not our business
+  b=${ref#refs/heads/}
+  if [ "$old" = "$zero" ]; then
+    branch_ok "$b" || branch_reject "$b"      # creation: name must be good
+    continue
+  fi
+  # git commit does not export GIT_REFLOG_ACTION; merge/pull/reset/checkout do.
+  # So: empty action (commit, update-ref plumbing) or commit-like => must be well-named.
+  case "${GIT_REFLOG_ACTION:-}" in
+    ""|commit*|cherry-pick*|revert*|rebase*) branch_ok "$b" || branch_reject "$b" ;;
+  esac
+done
+exit 0

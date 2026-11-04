@@ -16,7 +16,9 @@
     "e2e": "playwright test",
     "start": "node src/main.ts",
     "ui:shots": "node scripts/ui-shots.ts",
-    "verify": "node scripts/verify.ts"
+    "verify": "node scripts/verify.ts",
+    "check:agent-run": "node scripts/check-agent-run.ts",
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
