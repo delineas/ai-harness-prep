@@ -38,9 +38,11 @@ test("a year filter works and warns that unknown years are hidden", async ({ pag
   await search(page, { kind: "Shows", year: "2020" });
   await expect(page.getByText("Titles whose release year is unknown are hidden")).toBeVisible();
   await expect(page.locator("#page-info")).toContainText("titles)");
-  const metas = await page.locator("#titles .meta").allTextContents();
-  expect(metas.length).toBeGreaterThan(0);
-  expect(metas.every((m) => m === "Show · 2020")).toBe(true);
+  // Poll: the grid repaints after the request, so one read can catch the old list half replaced.
+  await expect.poll(async () => {
+    const metas = await page.locator("#titles .meta").allTextContents();
+    return metas.length > 0 && metas.every((m) => m === "Show · 2020");
+  }).toBe(true);
 });
 
 test("sorting by hours puts the most viewed first and 'no data' last", async ({ page }) => {
