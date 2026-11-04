@@ -1,0 +1,40 @@
+# Screams when a PR changes a rule that judges the work (see scripts/ci/judges-guard.ts for the list).
+#
+# SECURITY: pull_request_target runs THIS FILE AND THE SCRIPT FROM THE BASE BRANCH, so a PR cannot edit
+# them to pass. For that reason this job must never build, install or run anything from the PR:
+# it only fetches the PR commits as data and reads their diff. Do not add `npm ci` or a checkout of the head.
+name: judges-guard
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, labeled, unlabeled, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write   # PR comment
+  issues: write          # label removal and the comment API
+
+concurrency:
+  group: judges-guard-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  guard:
+    name: guard
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 (base branch, no ref given)
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Fetch the PR commits as data
+        run: git fetch --no-tags origin "refs/pull/${PR_NUMBER}/head"
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+      - run: node scripts/ci/judges-guard.ts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          APPROVER: ${{ vars.JUDGES_APPROVER }}
