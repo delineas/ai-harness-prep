@@ -24,6 +24,13 @@ Each step of the guide ends in a tag, and each tag descends from the previous on
 | Tag | State |
 |---|---|
 | `paso-00` | Specs only |
+| `paso-03-sin-harness` | Spec 01 as an agent built it with no harness, and `docs/incidents.md` (branch `sin-harness`, never merged) |
+| `paso-04` | Layered skeleton, `AGENTS.md`, `CLAUDE.md` and `docs/decisions.md` |
+| `paso-05` | `npm run verify`, layer rules, browser e2e, the `ui-check` skill and spec 01 finished |
+| `paso-06` | Permission rules, the permission case list, spec 02 (reviews) and the sandbox |
+| `paso-07` | Git hooks, a `bwrap` launcher, a guard before each command (`harness/`) and the stop hook |
+| `paso-08` | `pre-push`, the `start-task` skill, CI workflows and the guard for what judges the agent |
+| `paso-09` | Audit fixes, `docs/backlog.md` and a whole task: top 10 history API and chart |
 
 ## License
 
