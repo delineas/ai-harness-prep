@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Netflix Explorer</title>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <a class="skip" href="#titles-heading">Skip to titles</a>
+    <header class="site-header">
+      <h1>Netflix Explorer</h1>
+      <dl id="stats" class="stats" aria-label="Catalog statistics" aria-busy="true"></dl>
+    </header>
+    <main>
+      <h2 id="titles-heading" tabindex="-1">Titles</h2>
+      <p id="status" role="status" aria-live="polite"></p>
+      <ul id="titles" class="grid"></ul>
+      <nav class="pager" aria-label="Pagination">
+        <button type="button" id="prev">Previous</button>
+        <span id="page-info"></span>
+        <button type="button" id="next">Next</button>
+      </nav>
+    </main>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>
