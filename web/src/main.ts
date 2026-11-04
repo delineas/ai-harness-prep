@@ -1,4 +1,6 @@
-import { ApiError, createReview, deleteReview, editReview, fetchReviews, fetchUsers, hideReview, showReview, type ReviewDto, type UserDto, fetchMovie, fetchShow, fetchStats, fetchTitles, type MovieDto, type ShowDto, type StatsDto, type TitleDto, type TitleFilters } from "./api.ts";
+import { ApiError, createReview, deleteReview, editReview, fetchReviews, fetchUsers, hideReview, showReview, type ReviewDto, type UserDto, fetchMovie, fetchShow, fetchStats, fetchTitles, fetchTop10History, type MovieDto, type ShowDto, type StatsDto, type TitleDto, type TitleFilters } from "./api.ts";
+
+import { renderTop10Chart } from "./top10Chart.ts";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const fmt = new Intl.NumberFormat("en-US");
@@ -129,6 +131,20 @@ function renderShow(s: ShowDto) {
   );
 }
 
+/** Spec 03: the top 10 chart. A failure here must not hide the rest of the detail. */
+async function showHistory(t: TitleDto, mine: number) {
+  const holder = el("section", { class: "history" }, el("h3", { text: "Top 10 history" }));
+  try {
+    const { points } = await fetchTop10History(t.kind, t.id);
+    if (mine !== detailSeq) return;
+    holder.append(renderTop10Chart(points));
+  } catch {
+    if (mine !== detailSeq) return;
+    holder.append(el("p", { text: "Could not load the top 10 history." }));
+  }
+  $("detail-body").append(holder);
+}
+
 async function openDetail(t: TitleDto) {
   const mine = ++detailSeq;
   const panel = $("detail");
@@ -146,6 +162,7 @@ async function openDetail(t: TitleDto) {
     if (mine !== detailSeq) return;
     $("detail-body").replaceChildren(body);
     $("detail-status").textContent = "";
+    void showHistory(t, mine);
   } catch {
     if (mine !== detailSeq) return;
     $("detail-status").textContent = "Could not load details.";

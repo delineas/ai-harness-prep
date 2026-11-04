@@ -1,5 +1,5 @@
 import type { DatabaseSync, SQLInputValue } from "node:sqlite";
-import { sumHours, type CatalogStats, type MovieDetail, type SeasonDetail, type ShowDetail, type Title, type TitleKind } from "../../domain/catalog.ts";
+import { sumHours, type CatalogStats, type MovieDetail, type SeasonDetail, type ShowDetail, type Title, type TitleKind, type Top10Point } from "../../domain/catalog.ts";
 import type { CatalogRepository } from "../../application/ports.ts";
 
 type Row = Record<string, unknown>;
@@ -130,6 +130,22 @@ export function sqliteCatalogRepository(db: DatabaseSync): CatalogRepository {
         hoursViewed: sumHours(seasons.map((s) => s.hoursViewed)),
         seasons,
       };
+    },
+
+    top10History(kind, id): Top10Point[] | null {
+      const exists = db.prepare(kind === "movie" ? "SELECT 1 AS x FROM movie WHERE id = ?" : "SELECT 1 AS x FROM tv_show WHERE id = ?").get(id);
+      if (!exists) return null;
+      // R28: WEEKLY rows with a rank. R29: a show takes the best (lowest) rank among its seasons per week.
+      const sql =
+        kind === "movie"
+          ? `SELECT start_date, end_date, min(view_rank) AS rank FROM view_summary
+             WHERE movie_id = ? AND duration = 'WEEKLY' AND view_rank IS NOT NULL
+             GROUP BY start_date, end_date ORDER BY start_date`
+          : `SELECT v.start_date, v.end_date, min(v.view_rank) AS rank FROM view_summary v
+             JOIN season s ON s.id = v.season_id
+             WHERE s.tv_show_id = ? AND v.duration = 'WEEKLY' AND v.view_rank IS NOT NULL
+             GROUP BY v.start_date, v.end_date ORDER BY v.start_date`;
+      return (db.prepare(sql).all(id) as Row[]).map((r) => ({ weekStart: isoDate(num(r.start_date)), weekEnd: isoDate(num(r.end_date)), rank: num(r.rank) }));
     },
   };
 }

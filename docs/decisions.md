@@ -87,3 +87,17 @@ Rules R18–R27 for `specs/spec-02-reviews.md`. "Spec" means it comes from the s
 **R26. No email in the API (spec).** Responses are built field by field from objects that do not carry the email at all: the domain `User` has no email. `GET /api/users` returns `id`, `displayName`, `role`.
 
 **R27. Review list (decision).** Newest first (`created_at` then `id`, descending). Each review carries `can: { edit, hide, show, delete }` computed by the backend for the current viewer, so the UI never re-implements the table. Text is always rendered as text.
+
+# Spec 03 — Top 10 history
+
+Rules R28–R32 for "Top 10 history of a title" in `specs/spec-03-relations-and-analyst.md`. "Decision" means the spec left it open and the user chose (asked on 2026-11-04).
+
+**R28. Source rows (decision).** Rank per week comes from `view_summary` rows with `duration = 'WEEKLY'` and a non-null `view_rank`. SEMI_ANNUALLY rows are never used (they are a different report; see R11).
+
+**R29. Rank of a show (decision).** A show has no rows of its own; its rank in a week is the **best (lowest) `view_rank` among its seasons** that week. Measured: 153 show-weeks have more than one season in the same week, so this rule changes the result; one point per week, never two.
+
+**R30. Weeks outside the top 10 (decision).** Only the weeks where the title appears are returned. The API does not invent `null` points. The chart breaks the line (a gap) where consecutive points are not consecutive weeks. A title with no weeks returns an empty list, not an error.
+
+**R31. Response (decision).** `GET /api/titles/:kind/:id/top10-history` answers `{ points: [{ weekStart, weekEnd, rank }] }`, in ascending chronological order. Dates are ISO `YYYY-MM-DD` read as UTC (R1). `kind` is `movie` or `show` and `id` a positive integer (else 400); a title missing from the catalog is a 404 (as R25).
+
+**R32. Chart (decision).** Inline SVG, no library. Rank 1 is at the top and rank 10 at the bottom. It has a text alternative listing every week (`Week of <date>: #<rank>`), and says so in plain words when the title has no weeks in the top 10.

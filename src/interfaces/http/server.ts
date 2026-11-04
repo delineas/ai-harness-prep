@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 import { getStats } from "../../application/getStats.ts";
 import { NotFoundError, getMovie, getShow } from "../../application/getTitleDetail.ts";
+import { getTop10History } from "../../application/getTop10History.ts";
 import { InvalidQueryError, listTitles } from "../../application/listTitles.ts";
 import type { CatalogRepository } from "../../application/ports.ts";
 import type { ReviewsService } from "../../application/reviews.ts";
@@ -90,6 +91,8 @@ export function createHttpServer(repo: CatalogRepository, staticDir: string, rev
           const optNum = (k: string) => (q.has(k) ? Number(q.get(k)) : undefined);
           return json(res, 200, listTitles(repo, { page: optNum("page"), kind: opt("kind"), text: opt("q"), year: optNum("year"), sort: opt("sort") }));
         }
+        const history = url.pathname.match(/^\/api\/titles\/([^/]+)\/([^/]+)\/top10-history$/);
+        if (history) return json(res, 200, getTop10History(repo, history[1]!, history[2]!));
         const detail = url.pathname.match(/^\/api\/(movies|shows)\/([^/]+)$/);
         if (detail) {
           if (!/^\d+$/.test(detail[2]!)) return json(res, 400, { error: "id must be a positive integer" });

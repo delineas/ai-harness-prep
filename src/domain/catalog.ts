@@ -69,3 +69,11 @@ export function sumHours(parts: readonly (number | null)[]): number | null {
   const known = parts.filter((p): p is number => p !== null);
   return known.length === 0 ? null : known.reduce((a, b) => a + b, 0);
 }
+
+/** R28–R31: one point per week in the weekly top 10. Dates are ISO calendar dates (UTC). */
+export interface Top10Point {
+  readonly weekStart: string;
+  readonly weekEnd: string;
+  /** 1 = best. For a show, the best rank among its seasons that week (R29). */
+  readonly rank: number;
+}

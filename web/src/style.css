@@ -48,3 +48,17 @@ input, select { font:inherit; min-height:44px; padding:6px 10px; border:2px soli
 .review-form textarea, .review-form input, #user-select { font:inherit; width:100%; box-sizing:border-box; padding:8px; color:var(--fg); background:var(--bg); border:1px solid var(--muted); border-radius:6px; }
 .count { font-size:.85rem; color:var(--muted); } .count.over { color:var(--fg); font-weight:700; }
 .review-status { min-height:1.4em; margin:8px 0; font-weight:600; }
+
+/* Top 10 history chart (spec 03) */
+.history { margin-top:16px; }
+.history h3 { margin:0 0 8px; }
+.chart { margin:0; display:grid; gap:8px; }
+.chart figcaption { font-size:.85rem; color:var(--muted); }
+.chart-summary { margin:0; font-weight:600; }
+.chart-svg { width:100%; height:auto; display:block; }
+.chart-grid { stroke:var(--border); stroke-width:1; }
+.chart-label { fill:var(--muted); font-size:12px; }
+.chart-line { fill:none; stroke:var(--accent); stroke-width:2; stroke-linejoin:round; stroke-linecap:round; }
+.chart-dot { fill:var(--accent); stroke:var(--card); stroke-width:2; }
+.chart summary { cursor:pointer; min-height:44px; display:list-item; padding-top:10px; }
+.chart-weeks { margin:0; padding-left:24px; }

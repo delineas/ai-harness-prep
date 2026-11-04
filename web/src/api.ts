@@ -40,6 +40,8 @@ export function fetchTitles(page: number, f: TitleFilters) {
 }
 
 export const fetchMovie = (id: number) => get<MovieDto>(`/api/movies/${id}`);
+export interface Top10PointDto { weekStart: string; weekEnd: string; rank: number }
+export const fetchTop10History = (kind: "movie" | "show", id: number) => get<{ points: Top10PointDto[] }>(`/api/titles/${kind}/${id}/top10-history`);
 export const fetchShow = (id: number) => get<ShowDto>(`/api/shows/${id}`);
 
 // ---- Reviews (spec 02) ----

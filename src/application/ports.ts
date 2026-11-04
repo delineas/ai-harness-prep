@@ -1,4 +1,4 @@
-import type { CatalogStats, MovieDetail, ShowDetail, Title, TitleKind, TitleSort } from "../domain/catalog.ts";
+import type { CatalogStats, MovieDetail, ShowDetail, Title, TitleKind, TitleSort, Top10Point } from "../domain/catalog.ts";
 import type { Review, ReviewStatus, User } from "../domain/reviews.ts";
 
 export interface TitleQuery {
@@ -15,6 +15,8 @@ export interface CatalogRepository {
   listTitles(query: TitleQuery, offset: number, limit: number): { items: Title[]; total: number };
   movie(id: number): MovieDetail | null;
   show(id: number): ShowDetail | null;
+  /** R28–R31: weekly top 10 ranks in ascending week order; null when the title does not exist. */
+  top10History(kind: TitleKind, id: number): Top10Point[] | null;
 }
 
 // ---- Spec 02 ----
