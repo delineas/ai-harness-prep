@@ -21,7 +21,8 @@
       "Bash(git commit:*)",
       "Bash(git tag:*)",
       "Bash(git checkout sin-harness:*)",
-      "Bash(git switch sin-harness:*)"
+      "Bash(git switch sin-harness:*)",
+      "Edit(/harness/**)"
     ],
     "ask": [
       "Edit(/data/**)",
@@ -56,7 +57,22 @@
     "autoAllowBashIfSandboxed": false,
     "excludedCommands": [],
     "filesystem": {
-      "denyRead": ["data/app.db"]
+      "denyRead": [
+        "data/app.db"
+      ]
     }
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh harness/fail-closed.sh claude"
+          }
+        ]
+      }
+    ]
   }
 }
