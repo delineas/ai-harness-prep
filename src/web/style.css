@@ -1,0 +1,28 @@
+:root { --bg:#fff; --fg:#1a1a1a; --muted:#595959; --accent:#b00020; --border:#c8c8c8; --card:#f6f6f6; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#141414; --fg:#f2f2f2; --muted:#b8b8b8; --accent:#ff6b7f; --border:#4a4a4a; --card:#222; }
+}
+* { box-sizing: border-box; }
+body { margin:0; font:16px/1.5 system-ui,sans-serif; background:var(--bg); color:var(--fg); }
+header, main { padding: 1rem; max-width: 72rem; margin: 0 auto; }
+h1 { margin:0; color:var(--accent); }
+#stats, #status, #page-info { color:var(--muted); margin:.25rem 0; }
+#search { display:flex; flex-wrap:wrap; gap:.75rem; align-items:end; }
+label { display:flex; flex-direction:column; font-size:.875rem; gap:.25rem; }
+input, select, button { font:inherit; padding:.5rem .75rem; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--fg); min-height:2.5rem; }
+button { cursor:pointer; background:var(--accent); color:#fff; border-color:var(--accent); }
+@media (prefers-color-scheme: dark) { button { color:#000; } }
+button:disabled { opacity:.5; cursor:not-allowed; }
+:focus-visible { outline:3px solid #1a73e8; outline-offset:2px; }
+.layout { display:grid; grid-template-columns: 1fr; gap:1rem; margin-top:1rem; }
+@media (min-width: 60rem) { .layout { grid-template-columns: 2fr 1fr; } }
+.grid { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,11rem),1fr)); gap:.75rem; }
+.grid button { width:100%; height:100%; text-align:left; background:var(--card); color:var(--fg); border-color:var(--border); display:flex; flex-direction:column; gap:.25rem; overflow-wrap:anywhere; }
+.grid button[aria-pressed="true"] { border-color:var(--accent); border-width:2px; }
+.meta { color:var(--muted); font-size:.8125rem; }
+.pager { display:flex; gap:1rem; align-items:center; margin-top:1rem; }
+#detail { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:1rem; overflow-wrap:anywhere; }
+#detail h2 { margin-top:0; }
+dl { display:grid; grid-template-columns:auto 1fr; gap:.25rem 1rem; }
+dt { color:var(--muted); } dd { margin:0; }
+table { width:100%; border-collapse:collapse; } th, td { text-align:left; padding:.25rem; border-bottom:1px solid var(--border); }

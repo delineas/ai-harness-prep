@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Netflix Explorer</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header>
+    <h1>Netflix Explorer</h1>
+    <p id="stats" aria-live="polite">Loading stats…</p>
+  </header>
+  <main>
+    <form id="search" role="search">
+      <label>Title <input type="search" name="q" autocomplete="off"></label>
+      <label>Kind
+        <select name="kind"><option value="">All</option><option value="movie">Movies</option><option value="show">Shows</option></select>
+      </label>
+      <label>Year <input type="number" name="year" min="1900" max="2100" inputmode="numeric"></label>
+      <label>Sort
+        <select name="sort"><option value="title">Title</option><option value="hours">Hours viewed</option></select>
+      </label>
+      <button type="submit">Search</button>
+    </form>
+    <p id="status" role="status"></p>
+    <div class="layout">
+      <section aria-label="Titles">
+        <ul id="grid" class="grid"></ul>
+        <nav class="pager" aria-label="Pagination">
+          <button type="button" id="prev">Previous</button>
+          <span id="page-info"></span>
+          <button type="button" id="next">Next</button>
+        </nav>
+      </section>
+      <aside id="detail" aria-label="Title detail" tabindex="-1"><p>Select a title to see its detail.</p></aside>
+    </div>
+  </main>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>
