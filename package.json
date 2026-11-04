@@ -15,9 +15,11 @@
     "build": "vite build",
     "e2e": "playwright test",
     "start": "node src/main.ts",
+    "ui:shots": "node scripts/ui-shots.ts",
     "verify": "node scripts/verify.ts"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@playwright/test": "1.64.1",
     "@types/node": "24.19.2",
     "typescript": "7.0.2",

@@ -5,6 +5,7 @@ Netflix Explorer: read-only web app over a SQLite catalog. Specs in `specs/`, de
 ## Done means verified
 - Run `npm run verify` (typecheck, tests, build, browser e2e). Don't say "done" without it passing.
 - A UI change isn't done until the Playwright e2e passes in a real browser. If the browser can't run, say the UI is unverified. Don't imply it was checked.
+- A UI change is only done when the e2e passes and you have used the `ui-check` skill. Say what you clicked and what you saw.
 - A new test for a rule (layers, read-only, BATCH_*) must be shown to fail: break the rule once on purpose, see it go red, restore it.
 
 ## Business definitions
