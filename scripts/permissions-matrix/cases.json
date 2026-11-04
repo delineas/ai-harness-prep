@@ -1,0 +1,493 @@
+[
+  {
+    "id": "deny:Edit(/data/catalog.db*)",
+    "kind": "deny",
+    "rule": "Edit(/data/catalog.db*)",
+    "expect": "block",
+    "tool": "Edit",
+    "input": {
+      "file_path": "{ROOT}/data/catalog.db-permcheck",
+      "old_string": "",
+      "new_string": "permcheck\n"
+    }
+  },
+  {
+    "id": "deny:Write(/data/catalog.db*)",
+    "kind": "deny",
+    "rule": "Write(/data/catalog.db*)",
+    "expect": "block",
+    "tool": "Write",
+    "input": {
+      "file_path": "{ROOT}/data/catalog.db-permcheck",
+      "content": "permcheck\n"
+    }
+  },
+  {
+    "id": "deny:Edit(/tests/architecture.test.ts)",
+    "kind": "deny",
+    "rule": "Edit(/tests/architecture.test.ts)",
+    "expect": "block",
+    "tool": "Edit",
+    "input": {
+      "file_path": "{ROOT}/tests/architecture.test.ts",
+      "old_string": "{LINEMATCH:import}",
+      "new_string": "{LINEMATCH:import}\n"
+    },
+    "prime": "{ROOT}/tests/architecture.test.ts"
+  },
+  {
+    "id": "deny:Write(/tests/architecture.test.ts)",
+    "kind": "deny",
+    "rule": "Write(/tests/architecture.test.ts)",
+    "expect": "block",
+    "tool": "Write",
+    "input": {
+      "file_path": "{ROOT}/tests/architecture.test.ts",
+      "content": "permcheck\n"
+    },
+    "prime": "{ROOT}/tests/architecture.test.ts"
+  },
+  {
+    "id": "deny:Edit(/scripts/verify.ts)",
+    "kind": "deny",
+    "rule": "Edit(/scripts/verify.ts)",
+    "expect": "block",
+    "tool": "Edit",
+    "input": {
+      "file_path": "{ROOT}/scripts/verify.ts",
+      "old_string": "{LINEMATCH:import}",
+      "new_string": "{LINEMATCH:import}\n"
+    },
+    "prime": "{ROOT}/scripts/verify.ts"
+  },
+  {
+    "id": "deny:Write(/scripts/verify.ts)",
+    "kind": "deny",
+    "rule": "Write(/scripts/verify.ts)",
+    "expect": "block",
+    "tool": "Write",
+    "input": {
+      "file_path": "{ROOT}/scripts/verify.ts",
+      "content": "permcheck\n"
+    },
+    "prime": "{ROOT}/scripts/verify.ts"
+  },
+  {
+    "id": "deny:Edit(/e2e/**)",
+    "kind": "deny",
+    "rule": "Edit(/e2e/**)",
+    "expect": "block",
+    "tool": "Edit",
+    "input": {
+      "file_path": "{ROOT}/e2e/permcheck.spec.ts",
+      "old_string": "",
+      "new_string": "permcheck\n"
+    }
+  },
+  {
+    "id": "deny:Write(/e2e/**)",
+    "kind": "deny",
+    "rule": "Write(/e2e/**)",
+    "expect": "block",
+    "tool": "Write",
+    "input": {
+      "file_path": "{ROOT}/e2e/permcheck.spec.ts",
+      "content": "permcheck\n"
+    }
+  },
+  {
+    "id": "deny:Edit(/playwright.config.ts)",
+    "kind": "deny",
+    "rule": "Edit(/playwright.config.ts)",
+    "expect": "block",
+    "tool": "Edit",
+    "input": {
+      "file_path": "{ROOT}/playwright.config.ts",
+      "old_string": "{LINEMATCH:export default}",
+      "new_string": "{LINEMATCH:export default}\n"
+    },
+    "prime": "{ROOT}/playwright.config.ts"
+  },
+  {
+    "id": "deny:Write(/playwright.config.ts)",
+    "kind": "deny",
+    "rule": "Write(/playwright.config.ts)",
+    "expect": "block",
+    "tool": "Write",
+    "input": {
+      "file_path": "{ROOT}/playwright.config.ts",
+      "content": "permcheck\n"
+    },
+    "prime": "{ROOT}/playwright.config.ts"
+  },
+  {
+    "id": "deny:Edit(/vitest.config.ts)",
+    "kind": "deny",
+    "rule": "Edit(/vitest.config.ts)",
+    "expect": "block",
+    "tool": "Edit",
+    "input": {
+      "file_path": "{ROOT}/vitest.config.ts",
+      "old_string": "{LINEMATCH:export default}",
+      "new_string": "{LINEMATCH:export default}\n"
+    },
+    "prime": "{ROOT}/vitest.config.ts"
+  },
+  {
+    "id": "deny:Write(/vitest.config.ts)",
+    "kind": "deny",
+    "rule": "Write(/vitest.config.ts)",
+    "expect": "block",
+    "tool": "Write",
+    "input": {
+      "file_path": "{ROOT}/vitest.config.ts",
+      "content": "permcheck\n"
+    },
+    "prime": "{ROOT}/vitest.config.ts"
+  },
+  {
+    "id": "deny:Read(/data/catalog.db-*)",
+    "kind": "deny",
+    "rule": "Read(/data/catalog.db-*)",
+    "expect": "block",
+    "tool": "Read",
+    "input": {
+      "file_path": "{ROOT}/data/catalog.db-wal"
+    }
+  },
+  {
+    "id": "deny:Bash(git commit:*)",
+    "kind": "deny",
+    "rule": "Bash(git commit:*)",
+    "expect": "block",
+    "tool": "Bash",
+    "input": {
+      "command": "git commit --allow-empty -m permcheck"
+    }
+  },
+  {
+    "id": "deny:Bash(git tag:*)",
+    "kind": "deny",
+    "rule": "Bash(git tag:*)",
+    "expect": "block",
+    "tool": "Bash",
+    "input": {
+      "command": "git tag permcheck-tag"
+    }
+  },
+  {
+    "id": "deny:Bash(git checkout sin-harness:*)",
+    "kind": "deny",
+    "rule": "Bash(git checkout sin-harness:*)",
+    "expect": "block",
+    "tool": "Bash",
+    "input": {
+      "command": "git checkout sin-harness"
+    }
+  },
+  {
+    "id": "deny:Bash(git switch sin-harness:*)",
+    "kind": "deny",
+    "rule": "Bash(git switch sin-harness:*)",
+    "expect": "block",
+    "tool": "Bash",
+    "input": {
+      "command": "git switch sin-harness"
+    }
+  },
+  {
+    "id": "ask:Edit(/data/**)",
+    "kind": "ask",
+    "rule": "Edit(/data/**)",
+    "expect": "block",
+    "tool": "Edit",
+    "input": {
+      "file_path": "{ROOT}/data/permcheck.txt",
+      "old_string": "",
+      "new_string": "permcheck\n"
+    }
+  },
+  {
+    "id": "ask:Write(/data/**)",
+    "kind": "ask",
+    "rule": "Write(/data/**)",
+    "expect": "block",
+    "tool": "Write",
+    "input": {
+      "file_path": "{ROOT}/data/permcheck.txt",
+      "content": "permcheck\n"
+    }
+  },
+  {
+    "id": "ask:Edit(/migrations/**)",
+    "kind": "ask",
+    "rule": "Edit(/migrations/**)",
+    "expect": "block",
+    "tool": "Edit",
+    "input": {
+      "file_path": "{ROOT}/migrations/001_permcheck.sql",
+      "old_string": "",
+      "new_string": "permcheck\n"
+    }
+  },
+  {
+    "id": "ask:Write(/migrations/**)",
+    "kind": "ask",
+    "rule": "Write(/migrations/**)",
+    "expect": "block",
+    "tool": "Write",
+    "input": {
+      "file_path": "{ROOT}/migrations/001_permcheck.sql",
+      "content": "permcheck\n"
+    }
+  },
+  {
+    "id": "ask:Edit(/**/*.sql)",
+    "kind": "ask",
+    "rule": "Edit(/**/*.sql)",
+    "expect": "block",
+    "tool": "Edit",
+    "input": {
+      "file_path": "{ROOT}/src/permcheck.sql",
+      "old_string": "",
+      "new_string": "permcheck\n"
+    }
+  },
+  {
+    "id": "ask:Write(/**/*.sql)",
+    "kind": "ask",
+    "rule": "Write(/**/*.sql)",
+    "expect": "block",
+    "tool": "Write",
+    "input": {
+      "file_path": "{ROOT}/src/permcheck.sql",
+      "content": "permcheck\n"
+    }
+  },
+  {
+    "id": "ask:Edit(/package.json)",
+    "kind": "ask",
+    "rule": "Edit(/package.json)",
+    "expect": "block",
+    "tool": "Edit",
+    "input": {
+      "file_path": "{ROOT}/package.json",
+      "old_string": "{LINEMATCH:\"license\"}",
+      "new_string": "{LINEMATCH:\"license\"}\n"
+    },
+    "prime": "{ROOT}/package.json"
+  },
+  {
+    "id": "ask:Write(/package.json)",
+    "kind": "ask",
+    "rule": "Write(/package.json)",
+    "expect": "block",
+    "tool": "Write",
+    "input": {
+      "file_path": "{ROOT}/package.json",
+      "content": "permcheck\n"
+    },
+    "prime": "{ROOT}/package.json"
+  },
+  {
+    "id": "ask:Edit(/package-lock.json)",
+    "kind": "ask",
+    "rule": "Edit(/package-lock.json)",
+    "expect": "block",
+    "tool": "Edit",
+    "input": {
+      "file_path": "{ROOT}/package-lock.json",
+      "old_string": "{LINEMATCH:lockfileVersion}",
+      "new_string": "{LINEMATCH:lockfileVersion}\n"
+    },
+    "prime": "{ROOT}/package-lock.json"
+  },
+  {
+    "id": "ask:Write(/package-lock.json)",
+    "kind": "ask",
+    "rule": "Write(/package-lock.json)",
+    "expect": "block",
+    "tool": "Write",
+    "input": {
+      "file_path": "{ROOT}/package-lock.json",
+      "content": "permcheck\n"
+    },
+    "prime": "{ROOT}/package-lock.json"
+  },
+  {
+    "id": "ask:Bash(npm install:*)",
+    "kind": "ask",
+    "rule": "Bash(npm install:*)",
+    "expect": "block",
+    "tool": "Bash",
+    "input": {
+      "command": "npm install --dry-run left-pad"
+    }
+  },
+  {
+    "id": "ask:Bash(npm i:*)",
+    "kind": "ask",
+    "rule": "Bash(npm i:*)",
+    "expect": "block",
+    "tool": "Bash",
+    "input": {
+      "command": "npm i --dry-run left-pad"
+    }
+  },
+  {
+    "id": "ask:Bash(npm add:*)",
+    "kind": "ask",
+    "rule": "Bash(npm add:*)",
+    "expect": "block",
+    "tool": "Bash",
+    "input": {
+      "command": "npm add --dry-run left-pad"
+    }
+  },
+  {
+    "id": "ask:Bash(npm uninstall:*)",
+    "kind": "ask",
+    "rule": "Bash(npm uninstall:*)",
+    "expect": "block",
+    "tool": "Bash",
+    "input": {
+      "command": "npm uninstall --dry-run vitest"
+    }
+  },
+  {
+    "id": "ask:Bash(npm update:*)",
+    "kind": "ask",
+    "rule": "Bash(npm update:*)",
+    "expect": "block",
+    "tool": "Bash",
+    "input": {
+      "command": "npm update --dry-run"
+    }
+  },
+  {
+    "id": "ask:Bash(npm run fetch-catalog:*)",
+    "kind": "ask",
+    "rule": "Bash(npm run fetch-catalog:*)",
+    "expect": "block",
+    "tool": "Bash",
+    "input": {
+      "command": "npm run fetch-catalog"
+    }
+  },
+  {
+    "id": "ask:Bash(sqlite3:*)",
+    "kind": "ask",
+    "rule": "Bash(sqlite3:*)",
+    "expect": "block",
+    "tool": "Bash",
+    "input": {
+      "command": "sqlite3 data/catalog.db \"select 1\""
+    }
+  },
+  {
+    "id": "ask:Edit(/AGENTS.md)",
+    "kind": "ask",
+    "rule": "Edit(/AGENTS.md)",
+    "expect": "block",
+    "tool": "Edit",
+    "input": {
+      "file_path": "{ROOT}/AGENTS.md",
+      "old_string": "{LINEMATCH:# AGENTS.md}",
+      "new_string": "{LINEMATCH:# AGENTS.md}\n"
+    },
+    "prime": "{ROOT}/AGENTS.md"
+  },
+  {
+    "id": "ask:Write(/AGENTS.md)",
+    "kind": "ask",
+    "rule": "Write(/AGENTS.md)",
+    "expect": "block",
+    "tool": "Write",
+    "input": {
+      "file_path": "{ROOT}/AGENTS.md",
+      "content": "permcheck\n"
+    },
+    "prime": "{ROOT}/AGENTS.md"
+  },
+  {
+    "id": "ask:Edit(/CLAUDE.md)",
+    "kind": "ask",
+    "rule": "Edit(/CLAUDE.md)",
+    "expect": "block",
+    "tool": "Edit",
+    "input": {
+      "file_path": "{ROOT}/CLAUDE.md",
+      "old_string": "{LINEMATCH:@AGENTS.md}",
+      "new_string": "{LINEMATCH:@AGENTS.md}\n"
+    },
+    "prime": "{ROOT}/CLAUDE.md"
+  },
+  {
+    "id": "ask:Write(/CLAUDE.md)",
+    "kind": "ask",
+    "rule": "Write(/CLAUDE.md)",
+    "expect": "block",
+    "tool": "Write",
+    "input": {
+      "file_path": "{ROOT}/CLAUDE.md",
+      "content": "permcheck\n"
+    },
+    "prime": "{ROOT}/CLAUDE.md"
+  },
+  {
+    "id": "ask:Edit(/.claude/settings*.json)",
+    "kind": "ask",
+    "rule": "Edit(/.claude/settings*.json)",
+    "expect": "block",
+    "tool": "Edit",
+    "input": {
+      "file_path": "{ROOT}/.claude/settings.json",
+      "old_string": "{LINEMATCH:\"permissions\"}",
+      "new_string": "{LINEMATCH:\"permissions\"}\n"
+    },
+    "prime": "{ROOT}/.claude/settings.json"
+  },
+  {
+    "id": "ask:Write(/.claude/settings*.json)",
+    "kind": "ask",
+    "rule": "Write(/.claude/settings*.json)",
+    "expect": "block",
+    "tool": "Write",
+    "input": {
+      "file_path": "{ROOT}/.claude/settings.json",
+      "content": "permcheck\n"
+    },
+    "prime": "{ROOT}/.claude/settings.json"
+  },
+  {
+    "id": "allow:(control) Read de código",
+    "kind": "allow",
+    "rule": "(control) Read de código",
+    "expect": "allow",
+    "tool": "Read",
+    "input": {
+      "file_path": "{ROOT}/README.md"
+    }
+  },
+  {
+    "id": "allow:(control) Bash de solo lectura",
+    "kind": "allow",
+    "rule": "(control) Bash de solo lectura",
+    "expect": "allow",
+    "tool": "Bash",
+    "input": {
+      "command": "git status --short"
+    }
+  },
+  {
+    "id": "allow:(control) Write en src/",
+    "kind": "allow",
+    "rule": "(control) Write en src/",
+    "expect": "allow",
+    "tool": "Write",
+    "input": {
+      "file_path": "{ROOT}/src/permcheck-control.ts",
+      "content": "export {};\n"
+    }
+  }
+]
