@@ -1,0 +1,14 @@
+#!/bin/sh
+# Refuse to push to a remote branch whose name breaks the branch policy.
+# git feeds one line per ref on stdin: <local ref> <local sha> <remote ref> <remote sha>.
+# Deleting a remote branch and pushing tags are not our business.
+# --no-verify skips this hook; the real backstop for that is a server-side check.
+. "$(dirname "$0")/branch-policy.sh"
+zero=0000000000000000000000000000000000000000
+while read -r local_ref local_sha remote_ref remote_sha; do
+  case "$remote_ref" in refs/heads/*) ;; *) continue ;; esac
+  [ "$local_sha" = "$zero" ] && continue
+  b=${remote_ref#refs/heads/}
+  branch_ok "$b" || branch_reject "$b"
+done
+exit 0
