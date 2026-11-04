@@ -44,5 +44,15 @@
       "Edit(/.claude/settings*.json)",
       "Write(/.claude/settings*.json)"
     ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": true,
+    "allowUnsandboxedCommands": false,
+    "autoAllowBashIfSandboxed": false,
+    "excludedCommands": [],
+    "filesystem": {
+      "denyRead": ["data/app.db"]
+    }
   }
 }
