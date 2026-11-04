@@ -27,3 +27,18 @@ Netflix Explorer: read-only web app over a SQLite catalog. Specs in `specs/`, de
 
 ## Git
 - Branch off `main` (never `sin-harness`, the bad attempt). Don't commit, tag or edit the README tag table without being asked.
+
+## Harness
+Protected paths. Enforced by `.claude/settings.json`; the list there and this one must match.
+
+Never change (denied):
+- `data/catalog.db` (the catalog). Restore it only with `npm run fetch-catalog`, and ask first.
+- `tests/architecture.test.ts` and `scripts/verify.ts` (the rules that judge the work).
+- `e2e/**`, `playwright.config.ts` and `vitest.config.ts` (end-to-end tests and test config).
+- `git commit`, `git tag`, and switching to `sin-harness`, unless asked.
+
+Ask first (confirmation required):
+- The app database: anything else under `data/`, any `.sql` file, `sqlite3`.
+- Migrations: `migrations/**`.
+- Dependencies: `package.json`, `package-lock.json`, `npm install/add/update/uninstall`.
+- This file, `CLAUDE.md` and `.claude/settings*.json`.

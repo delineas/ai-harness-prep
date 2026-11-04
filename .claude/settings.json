@@ -1,0 +1,48 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(/data/catalog.db*)",
+      "Write(/data/catalog.db*)",
+      "Edit(/tests/architecture.test.ts)",
+      "Write(/tests/architecture.test.ts)",
+      "Edit(/scripts/verify.ts)",
+      "Write(/scripts/verify.ts)",
+      "Edit(/e2e/**)",
+      "Write(/e2e/**)",
+      "Edit(/playwright.config.ts)",
+      "Write(/playwright.config.ts)",
+      "Edit(/vitest.config.ts)",
+      "Write(/vitest.config.ts)",
+      "Read(/data/catalog.db-*)",
+      "Bash(git commit:*)",
+      "Bash(git tag:*)",
+      "Bash(git checkout sin-harness:*)",
+      "Bash(git switch sin-harness:*)"
+    ],
+    "ask": [
+      "Edit(/data/**)",
+      "Write(/data/**)",
+      "Edit(/migrations/**)",
+      "Write(/migrations/**)",
+      "Edit(/**/*.sql)",
+      "Write(/**/*.sql)",
+      "Edit(/package.json)",
+      "Write(/package.json)",
+      "Edit(/package-lock.json)",
+      "Write(/package-lock.json)",
+      "Bash(npm install:*)",
+      "Bash(npm i:*)",
+      "Bash(npm add:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npm update:*)",
+      "Bash(npm run fetch-catalog:*)",
+      "Bash(sqlite3:*)",
+      "Edit(/AGENTS.md)",
+      "Write(/AGENTS.md)",
+      "Edit(/CLAUDE.md)",
+      "Write(/CLAUDE.md)",
+      "Edit(/.claude/settings*.json)",
+      "Write(/.claude/settings*.json)"
+    ]
+  }
+}
