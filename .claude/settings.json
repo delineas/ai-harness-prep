@@ -22,7 +22,8 @@
       "Bash(git tag:*)",
       "Bash(git checkout sin-harness:*)",
       "Bash(git switch sin-harness:*)",
-      "Edit(/harness/**)"
+      "Edit(/harness/**)",
+      "Edit(/scripts/hooks/**)"
     ],
     "ask": [
       "Edit(/data/**)",
@@ -70,6 +71,29 @@
           {
             "type": "command",
             "command": "sh harness/fail-closed.sh claude"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/edit-feedback.sh",
+            "timeout": 90
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/stop-verify.sh",
+            "timeout": 600
           }
         ]
       }
