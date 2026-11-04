@@ -1,10 +1,12 @@
-import { createServer, type Server, type ServerResponse } from "node:http";
+import { createServer, type IncomingMessage, type Server, type ServerResponse } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 import { getStats } from "../../application/getStats.ts";
 import { NotFoundError, getMovie, getShow } from "../../application/getTitleDetail.ts";
 import { InvalidQueryError, listTitles } from "../../application/listTitles.ts";
 import type { CatalogRepository } from "../../application/ports.ts";
+import type { ReviewsService } from "../../application/reviews.ts";
+import { ConflictError, ForbiddenError, ValidationError } from "../../domain/reviews.ts";
 
 const MIME: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
@@ -18,11 +20,67 @@ function json(res: ServerResponse, status: number, body: unknown) {
   res.end(JSON.stringify(body));
 }
 
-export function createHttpServer(repo: CatalogRepository, staticDir: string): Server {
+const MAX_BODY_BYTES = 32 * 1024;
+
+async function readJson(req: IncomingMessage): Promise<unknown> {
+  const chunks: Buffer[] = [];
+  let size = 0;
+  for await (const c of req) {
+    size += (c as Buffer).length;
+    if (size > MAX_BODY_BYTES) throw new ValidationError("The request is too large.");
+    chunks.push(c as Buffer);
+  }
+  try {
+    return JSON.parse(Buffer.concat(chunks).toString("utf8"));
+  } catch {
+    throw new ValidationError("The request body is not valid JSON.");
+  }
+}
+
+/** Spec 02 routes. Returns false when the path is not one of them. */
+async function reviewRoutes(reviews: ReviewsService, req: IncomingMessage, res: ServerResponse, path: string): Promise<boolean> {
+  const uid = req.headers["x-user-id"];
+  const who = Array.isArray(uid) ? uid.join(",") : uid;
+  const m = req.method ?? "GET";
+  let r: RegExpMatchArray | null;
+
+  if (path === "/api/users") {
+    if (m !== "GET") return json(res, 405, { error: "method not allowed" }), true;
+    return json(res, 200, reviews.listUsers()), true;
+  }
+  if ((r = path.match(/^\/api\/titles\/([^/]+)\/([^/]+)\/reviews$/))) {
+    if (m === "GET") return json(res, 200, reviews.list(who, r[1]!, r[2]!)), true;
+    if (m === "POST") return json(res, 201, reviews.create(who, r[1]!, r[2]!, await readJson(req))), true;
+    return json(res, 405, { error: "method not allowed" }), true;
+  }
+  if ((r = path.match(/^\/api\/reviews\/([^/]+)$/))) {
+    if (m === "PATCH") return json(res, 200, reviews.edit(who, r[1]!, await readJson(req))), true;
+    if (m === "DELETE") return reviews.remove(who, r[1]!), res.writeHead(204).end(), true;
+    return json(res, 405, { error: "method not allowed" }), true;
+  }
+  if ((r = path.match(/^\/api\/reviews\/([^/]+)\/(hide|show)$/))) {
+    if (m !== "POST") return json(res, 405, { error: "method not allowed" }), true;
+    return json(res, 200, r[2] === "hide" ? reviews.hide(who, r[1]!) : reviews.show(who, r[1]!)), true;
+  }
+  return false;
+}
+
+export function createHttpServer(repo: CatalogRepository, staticDir: string, reviews?: ReviewsService): Server {
   return createServer(async (req, res) => {
     try {
-      if (req.method !== "GET" && req.method !== "HEAD") return json(res, 405, { error: "method not allowed" });
       const url = new URL(req.url ?? "/", "http://localhost");
+      if (reviews && url.pathname.startsWith("/api/")) {
+        try {
+          if (await reviewRoutes(reviews, req, res, url.pathname)) return;
+        } catch (e) {
+          if (e instanceof ValidationError) return json(res, 400, { error: e.message });
+          if (e instanceof ForbiddenError) return json(res, 403, { error: e.message });
+          if (e instanceof NotFoundError) return json(res, 404, { error: e.message });
+          if (e instanceof ConflictError) return json(res, 409, { error: e.message });
+          throw e;
+        }
+      }
+      if (req.method !== "GET" && req.method !== "HEAD") return json(res, 405, { error: "method not allowed" });
 
       if (url.pathname === "/api/stats") return json(res, 200, getStats(repo));
       try {

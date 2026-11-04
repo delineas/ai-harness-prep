@@ -1,4 +1,4 @@
-import { fetchMovie, fetchShow, fetchStats, fetchTitles, type MovieDto, type ShowDto, type StatsDto, type TitleDto, type TitleFilters } from "./api.ts";
+import { ApiError, createReview, deleteReview, editReview, fetchReviews, fetchUsers, hideReview, showReview, type ReviewDto, type UserDto, fetchMovie, fetchShow, fetchStats, fetchTitles, type MovieDto, type ShowDto, type StatsDto, type TitleDto, type TitleFilters } from "./api.ts";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const fmt = new Intl.NumberFormat("en-US");
@@ -136,9 +136,11 @@ async function openDetail(t: TitleDto) {
   panel.hidden = false;
   heading.textContent = t.title;
   $("detail-body").replaceChildren();
+  $("reviews").hidden = true;
   $("detail-status").textContent = "Loading…";
   heading.focus();
   panel.scrollIntoView({ block: "nearest" });
+  void openReviews(t);
   try {
     const body = t.kind === "movie" ? renderMovie(await fetchMovie(t.id)) : renderShow(await fetchShow(t.id));
     if (mine !== detailSeq) return;
@@ -155,3 +157,146 @@ fetchStats().then(renderStats, () => {
   $("stats").setAttribute("aria-busy", "false");
 });
 void loadPage(1);
+
+// ---- Reviews ----
+const MAX_BODY = 2000;
+let current: TitleDto | null = null;
+let currentUser: number | null = null;
+let editing: ReviewDto | null = null;
+let reviewSeq = 0;
+let users: UserDto[] = [];
+const userSelect = $<HTMLSelectElement>("user-select");
+const ratingInput = $<HTMLInputElement>("review-rating");
+const bodyInput = $<HTMLTextAreaElement>("review-body");
+
+const say = (msg: string) => {
+  $("review-status").textContent = msg;
+};
+const plain = (e: unknown) => (e instanceof ApiError ? e.message : "Could not reach the server. Please try again.");
+
+function stars(n: number) {
+  const s = el("span", { class: "stars", text: "★".repeat(n) + "☆".repeat(5 - n) });
+  s.setAttribute("role", "img");
+  s.setAttribute("aria-label", `${n} out of 5 stars`);
+  return s;
+}
+
+function reviewItem(r: ReviewDto) {
+  const buttons: HTMLButtonElement[] = [];
+  const add = (label: string, run: () => void) => {
+    const b = el("button", { text: label });
+    b.type = "button";
+    b.setAttribute("aria-label", `${label} review by ${r.authorName}`);
+    b.addEventListener("click", run);
+    buttons.push(b);
+  };
+  if (r.can.edit) add("Edit", () => startEdit(r));
+  if (r.can.hide) add("Hide", () => void act(() => hideReview(r.id, currentUser), "Review hidden."));
+  if (r.can.show) add("Show", () => void act(() => showReview(r.id, currentUser), "Review is visible again."));
+  if (r.can.delete) add("Delete", () => void act(() => deleteReview(r.id, currentUser), "Review deleted."));
+  const head = el("div", { class: "review-head" }, el("strong", { class: "author", text: r.authorName }), stars(r.rating));
+  if (r.status === "hidden") head.append(el("span", { class: "badge", text: "Hidden" }));
+  return el(
+    "li",
+    { class: "review" },
+    head,
+    el("p", { class: "review-body", text: r.body }), // text, never HTML
+    ...(buttons.length ? [el("div", { class: "actions" }, ...buttons)] : []),
+  );
+}
+
+async function loadReviews(announce = "") {
+  if (!current) return;
+  const mine = ++reviewSeq;
+  const t = current;
+  try {
+    const list = await fetchReviews(t.kind, t.id, currentUser);
+    if (mine !== reviewSeq) return;
+    $("review-list").replaceChildren(...list.map(reviewItem));
+    say(announce || (list.length === 0 ? "No reviews yet." : ""));
+  } catch (e) {
+    if (mine !== reviewSeq) return;
+    $("review-list").replaceChildren();
+    say(plain(e));
+  }
+}
+
+async function act(run: () => Promise<unknown>, done: string) {
+  try {
+    await run();
+    if (editing) stopEdit();
+    await loadReviews(done);
+  } catch (e) {
+    say(plain(e));
+  }
+}
+
+function updateCount() {
+  const n = [...bodyInput.value].length;
+  const c = $("review-count");
+  c.textContent = `${n} / ${MAX_BODY}`;
+  c.classList.toggle("over", n > MAX_BODY);
+}
+
+function startEdit(r: ReviewDto) {
+  editing = r;
+  ratingInput.value = String(r.rating);
+  bodyInput.value = r.body;
+  updateCount();
+  $("review-form-heading").textContent = "Edit your review";
+  $("review-submit").textContent = "Save changes";
+  $("review-cancel").hidden = false;
+  ratingInput.focus();
+}
+
+function stopEdit() {
+  editing = null;
+  ratingInput.value = "";
+  bodyInput.value = "";
+  updateCount();
+  $("review-form-heading").textContent = "Write a review";
+  $("review-submit").textContent = "Post review";
+  $("review-cancel").hidden = true;
+}
+
+async function openReviews(t: TitleDto) {
+  current = t;
+  stopEdit();
+  $("review-list").replaceChildren();
+  say("");
+  $("reviews").hidden = false;
+  await loadReviews();
+}
+
+userSelect.addEventListener("change", () => {
+  currentUser = userSelect.value === "" ? null : Number(userSelect.value);
+  stopEdit();
+  void loadReviews();
+});
+bodyInput.addEventListener("input", updateCount);
+$("review-cancel").addEventListener("click", () => {
+  stopEdit();
+  say("");
+});
+$<HTMLFormElement>("review-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (!current) return;
+  if (currentUser === null) return say("Choose a user in “Acting as” to write a review.");
+  const raw = ratingInput.value.trim();
+  const rating = raw === "" ? Number.NaN : Number(raw);
+  const t = current;
+  const run = editing ? () => editReview(editing!.id, currentUser, rating, bodyInput.value) : () => createReview(t.kind, t.id, currentUser, rating, bodyInput.value);
+  // The server owns the rules: an out-of-range rating comes back as a 400 with its explanation.
+  void act(run, editing ? "Review updated." : "Review posted.");
+});
+
+fetchUsers().then(
+  (list) => {
+    users = list;
+    userSelect.replaceChildren(
+      Object.assign(document.createElement("option"), { value: "", textContent: "Anonymous" }),
+      ...users.map((u) => Object.assign(document.createElement("option"), { value: String(u.id), textContent: u.role === "moderator" ? `${u.displayName} (moderator)` : u.displayName })),
+    );
+  },
+  () => say("Could not load the users."),
+);

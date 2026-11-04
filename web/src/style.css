@@ -33,3 +33,18 @@ input, select { font:inherit; min-height:44px; padding:6px 10px; border:2px soli
 .facts { margin:0; display:grid; gap:8px; } .facts dt { font-size:.8rem; color:var(--muted); } .facts dd { margin:0; font-weight:600; }
 .seasons { list-style:none; margin:0; padding:0; display:grid; gap:4px; }
 .seasons li { display:flex; justify-content:space-between; gap:12px; border-bottom:1px solid var(--border); padding:4px 0; }
+
+/* Reviews (spec 02) */
+.reviews { margin-top:24px; border-top:1px solid var(--border); padding-top:16px; }
+.reviews h3, .reviews h4 { margin:0 0 8px; }
+.review-list { list-style:none; margin:0 0 16px; padding:0; display:grid; gap:12px; }
+.review { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px; }
+.review-head { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.stars { color:var(--accent); letter-spacing:2px; }
+.badge { border:1px solid var(--muted); border-radius:4px; padding:0 6px; font-size:.8rem; color:var(--muted); }
+.review-body { margin:8px 0; white-space:pre-wrap; overflow-wrap:anywhere; }
+.review .actions, .review-form .actions { display:flex; flex-wrap:wrap; gap:8px; }
+.review-form { display:grid; gap:12px; }
+.review-form textarea, .review-form input, #user-select { font:inherit; width:100%; box-sizing:border-box; padding:8px; color:var(--fg); background:var(--bg); border:1px solid var(--muted); border-radius:6px; }
+.count { font-size:.85rem; color:var(--muted); } .count.over { color:var(--fg); font-weight:700; }
+.review-status { min-height:1.4em; margin:8px 0; font-weight:600; }

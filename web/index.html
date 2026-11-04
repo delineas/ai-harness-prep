@@ -55,6 +55,31 @@
           <h2 id="detail-heading" tabindex="-1">Details</h2>
           <p id="detail-status" role="status" aria-live="polite"></p>
           <div id="detail-body"></div>
+          <section id="reviews" class="reviews" aria-labelledby="reviews-heading" hidden>
+            <h3 id="reviews-heading">Reviews</h3>
+            <div class="field">
+              <label for="user-select">Acting as</label>
+              <select id="user-select"></select>
+            </div>
+            <p id="review-status" class="review-status" role="status" aria-live="polite"></p>
+            <ul id="review-list" class="review-list"></ul>
+            <form id="review-form" class="review-form" novalidate aria-labelledby="review-form-heading">
+              <h4 id="review-form-heading">Write a review</h4>
+              <div class="field">
+                <label for="review-rating">Rating (1 to 5)</label>
+                <input id="review-rating" type="number" inputmode="numeric" step="1" />
+              </div>
+              <div class="field">
+                <label for="review-body">Your review</label>
+                <textarea id="review-body" rows="4"></textarea>
+                <span id="review-count" class="count">0 / 2000</span>
+              </div>
+              <div class="actions">
+                <button type="submit" id="review-submit">Post review</button>
+                <button type="button" id="review-cancel" hidden>Cancel edit</button>
+              </div>
+            </form>
+          </section>
         </section>
       </div>
     </main>

@@ -63,3 +63,27 @@ Every figure below was measured on the pinned catalog (netflixdb v1.0.70) with a
 ## Access
 
 **R17. Read-only (spec).** `catalog.db` is opened only by `src/infrastructure/sqlite/openCatalog.ts`, read-only, with a SQLite authorizer that denies any read of `BATCH_*`. Both are tested against the connection the app uses.
+
+# Spec 02 — Reviews and roles
+
+Rules R18–R27 for `specs/spec-02-reviews.md`. "Spec" means it comes from the spec; "Decision" means the spec left it open and the user chose (asked on 2026-11-04).
+
+**R18. Separate database (spec).** Reviews and users live in `data/app.db` (override: `APP_DB`), never in `catalog.db`. The schema comes from versioned migrations (`PRAGMA user_version`), kept as code in `src/infrastructure/sqlite/appMigrations.ts` because the infrastructure layer may not import `node:fs`. Foreign keys are on. A UNIQUE index on `(user_id, title_kind, title_id)` backs R23.
+
+**R19. Users (decision).** There is no endpoint to create users. Migration 1 seeds four fictitious ones (three `user`, one `moderator`) with fake `@example.test` emails. Dates are epoch milliseconds.
+
+**R20. Identity (spec + decision).** No `X-User-Id` header means anonymous. A header that is not a positive integer is a 400. A well-formed id that matches no user is a **403**, never treated as anonymous (strict).
+
+**R21. Permission table (spec).** Anonymous reads visible reviews only and cannot write (403). `user` and `moderator` write, and edit **only their own** review (a moderator cannot edit someone else's: 403). Only a moderator hides or deletes. Hidden reviews are seen by their author and by moderators; for everyone else they do not exist (list omits them, direct actions answer 404).
+
+**R22. Hide and delete (decision).** Hide sets `status = hidden` and is **reversible**: `POST /api/reviews/:id/show` (a moderator-only endpoint added for this, the spec lists none) sets it back to `visible`. Hide and show are idempotent. Delete removes the row for good. A user cannot delete their own review (the table says only moderators). The author may edit their own hidden review; it stays hidden.
+
+**R23. One review per title (spec + decision).** One per user and title, moderators included. A second one is a 409.
+
+**R24. Rating and text (spec).** The rating is an integer from 1 to 5; anything else (0, 6, 3.5, "4") is a 400. The text is a string of 0 to 2000 characters, counted in Unicode code points; an empty text is valid. PATCH accepts `rating` and/or `body`, at least one.
+
+**R25. Title must exist (spec).** `kind` is `movie` or `show`, `id` a positive integer (else 400). A title missing from the catalog is a 404 on read and write.
+
+**R26. No email in the API (spec).** Responses are built field by field from objects that do not carry the email at all: the domain `User` has no email. `GET /api/users` returns `id`, `displayName`, `role`.
+
+**R27. Review list (decision).** Newest first (`created_at` then `id`, descending). Each review carries `can: { edit, hide, show, delete }` computed by the backend for the current viewer, so the UI never re-implements the table. Text is always rendered as text.
