@@ -27,10 +27,13 @@ Each step of the guide ends in a tag, and each tag descends from the previous on
 | `paso-03-sin-harness` | Spec 01 as an agent built it with no harness, and `docs/incidents.md` (branch `sin-harness`, never merged) |
 | `paso-04` | Layered skeleton, `AGENTS.md`, `CLAUDE.md` and `docs/decisions.md` |
 | `paso-05` | `npm run verify`, layer rules, browser e2e, the `ui-check` skill and spec 01 finished |
-| `paso-06` | Permission rules, the permission case list, spec 02 (reviews) and the sandbox |
-| `paso-07` | Git hooks, a `bwrap` launcher, a guard before each command (`harness/`) and the stop hook |
-| `paso-08` | `pre-push`, the `start-task` skill, CI workflows and the guard for what judges the agent |
-| `paso-09` | Audit fixes, `docs/backlog.md` and a whole task: top 10 history API and chart |
+| `paso-06` | Permission rules, the permission case list and spec 02 (reviews) |
+| `paso-07` | Git hooks, a `bwrap` launcher and a guard before each command (`harness/`). It also has the sandbox of step 09, which was set up first |
+| `paso-08` | The stop hook and feedback after each edit |
+| `paso-10` | `pre-push`, the `start-task` skill, CI workflows and the guard for what judges the agent |
+| `paso-11` | Audit fixes, `docs/backlog.md` and a whole task: top 10 history API and chart |
+
+Step 09 (the sandbox) has no tag of its own: in the test it was set up right after step 06, in commit `7b90f12`.
 
 ## License
 
